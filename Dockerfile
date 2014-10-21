@@ -37,3 +37,24 @@ RUN pip install distribute==0.7.3 && pip install setuptools==6.1 && pip install 
 
 ADD requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
+
+RUN add-apt-repository ppa:webupd8team/java
+RUN apt-get update
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | \
+    /usr/bin/debconf-set-selections
+RUN apt-fast install -y oracle-java8-installer
+RUN apt-fast install -y oracle-java8-set-default
+
+ENV SCALA_VERSION 2.9.2
+ENV PATH /opt/scala-$SCALA_VERSION/bin:$PATH
+
+RUN wget -q http://www.scala-lang.org/files/archive/scala-$SCALA_VERSION.tgz -O /tmp/scala_$SCALA_VERSION.tgz
+RUN tar xfz /tmp/scala_$SCALA_VERSION.tgz -C /opt
+
+ENV MAVEN_VERSION 3.2.2
+ADD http://www.us.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz
+RUN tar xfz /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz -C /opt
+
+ENV PATH /opt/apache-maven-$MAVEN_VERSION/bin:$PATH
+
+
